@@ -1,0 +1,128 @@
+3A Notes
+
+Assume page/block size is4096 bytes => reduce overhead to close to 0%
+
+Size of block: 2^n (e.g 512B, 1024B,2048B, 4096B)
+
+
+Project 3A:
+=> read on disk rep of a file of system represented by a trivial.img
+
+max # of files = (inodes) allowed in the FS.
+
+
+Ext2 File System
+
+
+Boot block (first 1024 bytes) => load OS from disk to memory, location of OS on disk
+
+
+Block Groups: 
+contiguous bytes of adjacent location on the disk
+one file can only be in one block group
+
+Inside of a block group
+Superblock
+Group Descriptors
+Data BLocck bitmap
+Inode Bitmap
+Inode Table
+Data Blocks (actual data of the file)
+
+
+I know bitmap just is a bitmap of 0 and 1. One bit tells you like which bits are used for the index node or the index node, or just indexes you use to actually locate the data blocks. So you would have a table of indexes
+
+
+Superblock
+size : 1024 bytes
+Starts 1024 byte offset from begining of disk (after the boot block)
+tells us the file system => ext2
+how many blocks on the entire system not just the one block it belongs to.
+block size of the file system
+
+s_inodes_count
+s_blocks_count
+s_blocks_per_group
+s_magic  /// tells us type of file system : ext2 or FAT
+s_log_block_size
+
+BAD WAY:
+int fd = 0;
+unsigned int inodes_count = 0, blocks_count = 0, log_block_size = 0;
+fd = open(“test.img", O_RDONLY); 
+pread(fd, &inodes_count, sizeof(inodes_count), 1024);
+pread(fd, &blocks_count, sizeof(blocks_count), 1028);
+…
+pread(fd, &log_block_size, sizeof(log_block_size), 1048);
+block_size = 1024 << log_block_size; /* calculate block size in bytes */
+
+RECOMMENDED APPRAOCH (use struct ext2_super_block)
+
+int fd = 0;
+unsigned int inodes_count = 0, blocks_count = 0, log_block_size = 0;
+struct ext2_super_block super;
+fd = open(“test.img", O_RDONLY);
+//Note: Need to check the return value of pread to make sure it reads the
+//specified size.
+pread(fd, &super, sizeof(super), 1024);
+inodes_count = super.s_inodes_count;
+blocks_count = super.s_blocks_count;
+…
+block_size = 1024 << super.s_log_block_size; /* calculate block size in bytes */
+
+
+
+_______________________
+Group Descriptors
+Located in the next block after superblock
+
+blockk size = 1024 => block 2
+> 1024 => start block 1
+block < 1024 => not possible , the minimum block size is 1024
+
+An array of block group descriptors:
+each rep a block group on the disk
+records the general info on the block
+
+
+marks starting location of important blocks
+bg_block_bitmap
+bg_inode_bitmap
+bg_onde_table
+
+
+______________________________
+Block bitmap
+
+seq of 0 and 1 bit indicating whetrer a block has been used or not
+
+
+1 indicates if block is used (occupied by fiules or used by fiule system)
+0 => free 
+
+starts with block 1
+since block 0 is always used (boot block)
+________________________________
+
+inode bitmap
+
+iindicate whether ext2_inode in inode table is used or not
+Inode 0 is reserved
+inode bitmap starts at inode 1
+exactly same as block bit map
+
+____________________________________________
+
+
+inode table
+
+aarray of indoe descriptors
+each indoe describes the metadata of a file
+
+
+i_mode (file mode example : file or directory)
+
+i_block[EXT2_N_BLOCKS]  /*pointers to data blocks of file*/
+
+
+___________________________________________

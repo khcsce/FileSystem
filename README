@@ -1,0 +1,25 @@
+#NAME: Khoa Quach, Joshua Futterman
+#EMAIL: khoaquachschool@gmail.com, joshafuttcomp23@ucla.edu
+#ID: 105123806, 505347668
+
+
+
+Content:
+lab3a-105123806.tar.gz which contains:
+
+lab3a.c .. main source code for a program that analyzes the file system in a image file and outputs a summary
+ext2_fs.h ... a slightly simplified version of the Linux header file that defines the format of the EXT2 file system
+README (this file)
+Makefile
+
+Makefile: 
+default ... build lab3a
+dist ... create the deliverable tarball
+clean ... delete all programs and output created by the Makefile
+
+Sources:
+TA slides Discussion 1B
+TA Alexandre Slides for Indirection notes
+http://www.science.smith.edu/~nhowe/Teaching/csc262/oldlabs/ext2.html
+https://cgi.cse.unsw.edu.au/~cs3231/12s1/lectures/lect10x6.pdf
+http://www.dubeyko.com/development/FileSystems/ext2fs/ext2file.pdf

@@ -1,3 +1,6 @@
+//NAME: Khoa Quach, Joshua Futterman
+//EMAIL: khoaquachschool@gmail.com, joshafuttcomp23@ucla.edu
+//ID: 105123806, 505347668
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
